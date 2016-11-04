@@ -1,17 +1,16 @@
 <?php
 namespace Galaxy;
 
-define(WORLD_WIDTH, 1000);
-define(WORLD_HEIGHT, 800);
-define(WORLD_DEPTH, 100);
+define('Galaxy\WORLD_WIDTH', 1000);
+define('Galaxy\WORLD_HEIGHT', 800);
+define('Galaxy\WORLD_DEPTH', 100);
 
 class Galaxy
 {
+
     private $worlds = 50;
     private $worldSize = 10;
     private $galaxy = [];
-
-    public $colors = [];
 
     private function createCoords() {
         $coords = [];
@@ -39,9 +38,8 @@ class Galaxy
      *
      * @return Boolean True if the new coordinates are acceptable
      */
-    public function isValidCoords($coords) {
-        global $galaxy;
-        for ($i = 0; $i < count($galaxy); $i++) {
+    private function isValidCoords($coords) {
+        for ($i = 0; $i < count($this->galaxy); $i++) {
             $existing = $this->galaxy[$i]['x'] + $this->galaxy[$i]['y'] + $this->galaxy[$i]['z'];
             $proposed = $coords['x'] + $coords['y'] + $coords['z'];
 
@@ -66,7 +64,7 @@ class Galaxy
         if ($handle) {
             $i = 0;
             while (($buffer = fgets($handle, 1024)) !== false) {
-                $values = explode(',', $buffer);
+                $values = explode(',', trim($buffer));
                 list($r, $g, $b) = $values;
                 $colors[$i]['r'] = $r;
                 $colors[$i]['g'] = $g;
@@ -79,6 +77,21 @@ class Galaxy
             fclose($handle);
 
             return $colors;
+        }
+        throw new Exception("Color file can't be opened.");
+    }
+
+    public function setColors() {
+        $palette = $this->readColors();
+
+        for ($i = 0; $i < $this->worlds; $i++) {
+            $randColor = mt_rand(1, count($palette) - 1);
+            error_log($randColor);
+            $color['r'] = $palette[$randColor]['r'];
+            $color['g'] = $palette[$randColor]['g'];
+            $color['b'] = $palette[$randColor]['b'];
+
+            $this->galaxy[$i]['colors'] = $color;
         }
     }
 

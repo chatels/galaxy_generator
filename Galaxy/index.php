@@ -15,6 +15,11 @@ $colors = $galaxy->readColors();
 $galaxy->setCoords();
 
 /*
+ * Assign color to each star/planet
+ */
+$galaxy->setColors();
+
+/*
  * Return the data to the client
  */
 $galaxy->getGalaxies();
